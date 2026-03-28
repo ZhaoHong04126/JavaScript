@@ -1,5 +1,30 @@
-import React from 'react'; // 移除了不再使用的 useState
+import React from 'react';
 import './App.css';
+
+// --- 0. 導覽列元件 (Navbar) ---
+const Navbar = () => {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <nav className="navbar">
+      <div className="navbar-brand" onClick={() => scrollToSection('hero')}>
+        JS 探索
+      </div>
+      <ul className="navbar-links">
+        <li onClick={() => scrollToSection('features')}>特性</li>
+        <li onClick={() => scrollToSection('evolution')}>演進史</li>
+        <li onClick={() => scrollToSection('architecture')}>框架</li>
+        <li onClick={() => scrollToSection('terminal')}>指令</li>
+        <li onClick={() => scrollToSection('references')}>資源</li>
+      </ul>
+    </nav>
+  );
+};
 
 // --- 1. 頁首元件 (Hero) ---
 const HeroSection = () => {
@@ -11,7 +36,7 @@ const HeroSection = () => {
   };
 
   return (
-    <header className="hero">
+    <header id="hero" className="hero">
       <h1>深入解析 JavaScript</h1>
       <p>驅動現代互動式網頁與全端開發的核心程式語言</p>
       <button className="cta-button" onClick={handleStartLearning}>
@@ -52,15 +77,15 @@ const FeaturesSection = () => {
 // --- 3. 演進史時間軸元件 (Evolution) ---
 const EvolutionSection = () => {
   const milestones = [
-    { year: "1995", title: "JavaScript 誕生", description: "Brendan Eich 在 10 天內為 Netscape 瀏覽器開發出最初版本。" },
-    { year: "1997", title: "ECMAScript 標準化", description: "為了避免各家瀏覽器語法不一，交由 ECMA 國際組織制定標準 (ES1)。" },
-    { year: "2009", title: "Node.js 與 ES5", description: "Node.js 讓 JavaScript 跨出瀏覽器走向後端；ES5 帶來 JSON 支援與嚴格模式。" },
-    { year: "2015", title: "ES6 (ES2015) 革命", description: "現代 JS 的重大轉捩點！引入 let/const、箭頭函式、Class 與 Promise 等強大特性。" },
-    { year: "現在", title: "全端與無所不在", description: "搭配 TypeScript、React/Vue 等前端框架，成為世界上最受歡迎的語言之一。" }
+    { year: "1995", title: "JavaScript 誕生", description: "網景工程師布蘭登·艾克僅花十天就設計出原型。最初命名為 Mocha，後改為 LiveScript，同年底為搭上 Java 熱潮而正式定名為 JavaScript。" },
+    { year: "1997", title: "ECMAScript 標準化", description: "因微軟推出 JScript 導致瀏覽器大戰與標準混亂，網景向 ECMA 提交標準，於 1997 年制定了以 JavaScript 為基礎的 ECMAScript 規範 (ECMA-262)。" },
+    { year: "2005", title: "AJAX 復興時期", description: "傑西·賈瑞特提出「AJAX」一詞，讓網頁能在背景載入資料而不需重新整理頁面。這項技術的普及引發了 JavaScript 的復興與開源社群的爆發。" },
+    { year: "2009", title: "Node.js 與 ES5", description: "瑞安·達爾建立的 Node.js 讓 JavaScript 成功跨出網頁瀏覽器，成為獨立的伺服器端執行環境；同年底也發布了 ECMAScript 5 語言標準。" },
+    { year: "2015", title: "ES6 走向成熟", description: "ECMAScript 6 (ES2015) 發布，為語言帶來了廣泛的語法補充與改進。如今的 JavaScript 已擁有無數的庫與框架，並被世界絕大多數網站使用。" }
   ];
 
   return (
-    <section className="evolution-section">
+    <section id="evolution" className="evolution-section">
       <h2>JavaScript 的演進史</h2>
       <div className="timeline">
         {milestones.map((item, index) => (
@@ -79,7 +104,7 @@ const EvolutionSection = () => {
 
 // --- 4. 框架與全端架構元件 (Frameworks & Architecture) ---
 const FrameworksAndArchitecture = () => (
-  <section className="architecture-section">
+  <section id="architecture" className="architecture-section">
     <h2>從前端框架到全端架構</h2>
 
     <div className="frameworks-container">
@@ -162,7 +187,43 @@ const FrameworksAndArchitecture = () => (
   </section>
 );
 
-// --- 5. 進階概念元件 (Advanced Concepts) ---
+// --- 5. 終端機指令元件 (Terminal Commands) ---
+const TerminalCommands = () => {
+  const commands = [
+    { cmd: "npm create vite@latest my-project", desc: "使用 Vite 快速建立一個全新的現代前端專案。" },
+    { cmd: "npm install", desc: "根據 package.json 安裝專案所需的所有套件與相依模組。" },
+    { cmd: "npm run dev", desc: "啟動本地端的開發伺服器，讓你在瀏覽器即時預覽修改的結果。" },
+    { cmd: "npm run build", desc: "將專案打包、壓縮，轉換成瀏覽器能讀懂的純靜態檔案，準備上線。" }
+  ];
+
+  return (
+    <section id="terminal" className="terminal-section">
+      <h2>必學的終端機指令</h2>
+      <p className="section-subtitle">作為現代前端開發者，這些是您天天都會用到的 Node.js / npm 核心指令：</p>
+      <div className="terminal-window">
+        <div className="terminal-header">
+          <span className="dot red"></span>
+          <span className="dot yellow"></span>
+          <span className="dot green"></span>
+          <span className="terminal-title">bash - VS Code</span>
+        </div>
+        <div className="terminal-body">
+          {commands.map((c, index) => (
+            <div key={index} className="command-group">
+              <div className="command-line">
+                <span className="prompt">$</span>
+                <span className="command">{c.cmd}</span>
+              </div>
+              <div className="command-desc"># {c.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- 6. 進階概念元件 (Advanced Concepts) ---
 const AdvancedConcepts = () => (
   <section className="advanced-concepts">
     <h2>核心與進階概念</h2>
@@ -183,37 +244,17 @@ const AdvancedConcepts = () => (
   </section>
 );
 
-// --- 6. 網路參考連結元件 (Reference Links) ---
+// --- 7. 網路參考連結元件 (Reference Links) ---
 const ReferenceLinks = () => {
   const links = [
-    {
-      title: "MDN Web Docs",
-      description: "Mozilla 維護的開發者社群，最權威、最詳細的 JavaScript 語法字典與教學。",
-      url: "https://developer.mozilla.org/zh-TW/docs/Web/JavaScript",
-      icon: "📚"
-    },
-    {
-      title: "JavaScript.info",
-      description: "從基礎到高階的現代 JavaScript 教學，圖文並茂且包含豐富範例。",
-      url: "https://javascript.info/",
-      icon: "💡"
-    },
-    {
-      title: "React 官方文件",
-      description: "學習 React (react.dev) 的最佳起點，掌握現代前端元件化開發。",
-      url: "https://react.dev/",
-      icon: "⚛️"
-    },
-    {
-      title: "Node.js 官方網站",
-      description: "讓 JavaScript 運行在伺服器端的執行環境，探索全端開發的入口。",
-      url: "https://nodejs.org/",
-      icon: "🟩"
-    }
+    { title: "MDN Web Docs", description: "Mozilla 維護的開發者社群，最權威、最詳細的 JavaScript 語法字典與教學。", url: "https://developer.mozilla.org/zh-TW/docs/Web/JavaScript", icon: "📚" },
+    { title: "JavaScript.info", description: "從基礎到高階的現代 JavaScript 教學，圖文並茂且包含豐富範例。", url: "https://javascript.info/", icon: "💡" },
+    { title: "React 官方文件", description: "學習 React (react.dev) 的最佳起點，掌握現代前端元件化開發。", url: "https://react.dev/", icon: "⚛️" },
+    { title: "Node.js 官方網站", description: "讓 JavaScript 運行在伺服器端的執行環境，探索全端開發的入口。", url: "https://nodejs.org/", icon: "🟩" }
   ];
 
   return (
-    <section className="references-section">
+    <section id="references" className="references-section">
       <h2>網路參考連結</h2>
       <p className="references-subtitle">準備好繼續深入學習了嗎？這些是業界強烈推薦的優質資源：</p>
       <div className="references-grid">
@@ -231,24 +272,25 @@ const ReferenceLinks = () => {
   );
 };
 
-// --- 7. 頁尾元件 (Footer) ---
+// --- 8. 頁尾元件 (Footer) ---
 const Footer = () => (
   <footer className="footer">
     <p>© {new Date().getFullYear()} JavaScript 專業探索. 採用 React.js 建置.</p>
   </footer>
 );
 
-// --- 8. 主元件 (App) ---
+// --- 主元件 (App) ---
 function App() {
   return (
     <div className="app-container">
+      <Navbar />
       <HeroSection />
       <main>
         <FeaturesSection />
         <EvolutionSection />
         <FrameworksAndArchitecture /> 
+        <TerminalCommands />
         <AdvancedConcepts />
-        {/* 替換為參考連結元件 👇 */}
         <ReferenceLinks />
       </main>
       <Footer />

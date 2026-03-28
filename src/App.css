@@ -1,6 +1,8 @@
-/* 全局重置與變數 */
+/* =========================================
+   全局重置與變數
+========================================= */
 :root {
-  --primary-color: #f7df1e; /* JavaScript 黃色 */
+  --primary-color: #f7df1e;
   --text-dark: #333333;
   --text-light: #666666;
   --bg-light: #f9fafb;
@@ -19,17 +21,25 @@ body {
   min-height: 100vh;
 }
 
-/* 頁首設計 */
+/* =========================================
+   1. 頁首設計 (Hero) - 滿版置中
+========================================= */
 .hero {
   background-color: #222;
   color: white;
   text-align: center;
-  padding: 6rem 2rem;
+  padding: 2rem;
   border-bottom: 5px solid var(--primary-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .hero h1 {
-  font-size: 3rem;
+  font-size: 4rem;
   margin-bottom: 1rem;
 }
 
@@ -56,7 +66,9 @@ body {
   box-shadow: 0 4px 12px rgba(247, 223, 30, 0.4);
 }
 
-/* 特性區塊設計 */
+/* =========================================
+   2. 特性區塊設計 (Features)
+========================================= */
 .features-section {
   padding: 4rem 2rem;
   background-color: white;
@@ -97,11 +109,238 @@ body {
   margin-bottom: 1rem;
 }
 
-/* 進階概念區塊 */
-.advanced-concepts {
-  padding: 4rem 2rem;
+/* =========================================
+   3. 演進史時間軸設計 (Evolution)
+========================================= */
+.evolution-section {
+  padding: 5rem 2rem;
+  background-color: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.evolution-section h2 {
+  font-size: 2rem;
+  margin-bottom: 4rem;
+}
+
+.timeline {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 2rem;
+  position: relative;
+}
+
+.timeline-item {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.7rem;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border: 4px solid var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(247, 223, 30, 0.2);
+}
+
+.timeline-year {
+  display: inline-block;
+  background-color: #222;
+  color: var(--primary-color);
+  font-weight: 900;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.timeline-content {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.timeline-content:hover {
+  transform: translateX(5px);
+}
+
+.timeline-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  color: #222;
+}
+
+.timeline-content p {
+  margin: 0;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* =========================================
+   4. 框架與架構區塊設計 (Architecture)
+========================================= */
+.architecture-section {
+  padding: 5rem 2rem;
   background-color: var(--bg-light);
   text-align: center;
+}
+
+.architecture-section h2 {
+  font-size: 2rem;
+  margin-bottom: 3rem;
+}
+
+.architecture-section h3 {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+.framework-grid, .backend-grid {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto 4rem auto;
+}
+
+.framework-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 280px;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border-top: 5px solid #ccc;
+  transition: transform 0.2s;
+}
+
+.framework-card:hover { transform: translateY(-5px); }
+.framework-card.angular { border-top-color: #dd0031; }
+.framework-card.react { border-top-color: #61dafb; }
+.framework-card.vue { border-top-color: #4fc08d; }
+
+.framework-card h4 {
+  margin-top: 0;
+  font-size: 1.3rem;
+}
+
+.structure-container {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  text-align: left;
+  margin: 0 auto 4rem auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.structure-container p {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.framework-structure-grid {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.structure-card {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 260px;
+  border: 1px solid #e5e7eb;
+}
+
+.structure-card h4 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.structure-card p {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.structure-card .structure-list {
+  padding-left: 0;
+  list-style-type: none;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.structure-card .structure-list code {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  font-weight: normal;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.backend-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: left;
+  border-left: 4px solid var(--text-dark);
+}
+
+.backend-item code {
+  color: #aa3bff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.backend-item p {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+/* =========================================
+   5. 進階概念區塊 (Advanced Concepts)
+========================================= */
+.advanced-concepts {
+  padding: 4rem 2rem;
+  background-color: white;
+  text-align: center;
+  border-top: 1px solid #eee;
 }
 
 .concept-list {
@@ -114,7 +353,7 @@ body {
 }
 
 .concept-item {
-  background: white;
+  background: var(--bg-light);
   padding: 1.5rem;
   border-left: 4px solid var(--primary-color);
   border-radius: 4px;
@@ -131,7 +370,79 @@ body {
   color: var(--text-light);
 }
 
-/* 頁尾 */
+/* =========================================
+   6. 網路參考連結區塊 (Reference Links)
+========================================= */
+.references-section {
+  padding: 4rem 2rem;
+  background-color: var(--bg-light);
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.references-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.references-subtitle {
+  color: var(--text-light);
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+}
+
+.references-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reference-card {
+  background: white;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  min-width: 300px;
+  text-decoration: none; /* 移除超連結底線 */
+  color: inherit;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  text-align: left;
+}
+
+.reference-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+  border-color: var(--primary-color);
+}
+
+.reference-icon {
+  font-size: 2.5rem;
+}
+
+.reference-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.reference-content p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* =========================================
+   7. 頁尾 (Footer)
+========================================= */
 .footer {
   text-align: center;
   padding: 2rem;

@@ -3,7 +3,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden; /* 防止出現左右橫向捲軸 */
+  overflow-x: hidden;
 }
 
 #root {

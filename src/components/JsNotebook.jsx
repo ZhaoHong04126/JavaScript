@@ -1,37 +1,112 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// 1. 引入剛剛建立好的 supabase client
+import { supabase } from '../supabaseClient'; 
 
 const JsNotebook = () => {
-  // 1. 定義狀態：存放所有筆記的陣列，以及目前正在輸入的文字
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
 
-  // 2. 新增筆記的函式
-  const handleAddNote = () => {
-    // 檢查是否只輸入空白
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState('');
+
+  // 2. 初次載入元件時，從 Supabase 抓取資料
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    const { data, error } = await supabase
+      .from('notes')
+      .select('*')
+      .order('id', { ascending: true }); // 根據 ID 排序
+    
+    if (error) {
+      console.error('讀取筆記失敗:', error);
+    } else {
+      setNotes(data || []); // 將資料存入 state
+    }
+  };
+
+  // 3. 新增筆記 (寫入 Supabase)
+  const handleAddNote = async () => {
     if (newNote.trim() === '') return;
     
-    // 建立新筆記物件（包含唯一的 id、內容與時間）
     const noteItem = {
-      id: Date.now(),
       text: newNote,
       date: new Date().toLocaleString()
     };
 
-    // 更新筆記列表（把舊的筆記展開，加上新的筆記）
-    setNotes([...notes, noteItem]);
-    setNewNote(''); // 清空輸入框
+    // 使用 insert 寫入資料庫，並加上 .select() 讓它回傳寫入成功的那筆資料 (包含 DB 自動產生的 ID)
+    const { data, error } = await supabase
+      .from('notes')
+      .insert([noteItem])
+      .select();
+
+    if (error) {
+      console.error('新增筆記失敗:', error);
+    } else if (data) {
+      setNotes([...notes, data[0]]); // 把資料庫回傳的完整資料加進畫面
+      setNewNote('');
+    }
   };
 
-  // 3. 刪除筆記的函式
-  const handleDeleteNote = (id) => {
-    // 利用 filter 過濾掉被點擊刪除的那個 id
-    setNotes(notes.filter(note => note.id !== id));
+  // 4. 刪除筆記 (從 Supabase 刪除)
+  const handleDeleteNote = async (id) => {
+    const { error } = await supabase
+      .from('notes')
+      .delete()
+      .eq('id', id); // 告訴資料庫要刪除哪一個 ID
+
+    if (error) {
+      console.error('刪除筆記失敗:', error);
+    } else {
+      setNotes(notes.filter(note => note.id !== id));
+    }
+  };
+
+  // 啟動修改模式
+  const handleStartEdit = (note) => {
+    setEditingId(note.id);
+    setEditText(note.text);
+  };
+
+  // 取消修改
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditText('');
+  };
+
+  // 5. 儲存修改後的筆記 (更新 Supabase)
+  const handleSaveEdit = async (id) => {
+    if (editText.trim() === '') return;
+    
+    const newDate = new Date().toLocaleString() + ' (已編輯)';
+    
+    // 使用 update 更新資料庫中的對應 ID
+    const { error } = await supabase
+      .from('notes')
+      .update({ text: editText, date: newDate })
+      .eq('id', id);
+
+    if (error) {
+      console.error('更新筆記失敗:', error);
+    } else {
+      // 資料庫更新成功後，才更新畫面
+      const updatedNotes = notes.map(note => 
+        note.id === id 
+          ? { ...note, text: editText, date: newDate } 
+          : note
+      );
+      setNotes(updatedNotes);
+      setEditingId(null);
+      setEditText('');
+    }
   };
 
   return (
     <section style={styles.section}>
       <h2 style={styles.title}>📝 專屬 JS 筆記本</h2>
-      <p style={styles.subtitle}>在這裡隨手記錄你的學習心得或容易忘記的語法吧！</p>
+      <p style={styles.subtitle}>這些筆記現在會即時同步到 Supabase 資料庫！</p>
 
       {/* 輸入區塊 */}
       <div style={styles.inputContainer}>
@@ -54,16 +129,47 @@ const JsNotebook = () => {
         ) : (
           notes.map((note) => (
             <div key={note.id} style={styles.noteCard}>
-              <p style={styles.noteText}>{note.text}</p>
-              <div style={styles.noteFooter}>
-                <span style={styles.noteDate}>{note.date}</span>
-                <button 
-                  style={styles.deleteButton} 
-                  onClick={() => handleDeleteNote(note.id)}
-                >
-                  刪除
-                </button>
-              </div>
+              {editingId === note.id ? (
+                // --- 編輯模式 UI ---
+                <div style={styles.editContainer}>
+                  <textarea
+                    style={styles.textarea}
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    rows="4"
+                  />
+                  <div style={styles.editActions}>
+                    <button style={styles.saveButton} onClick={() => handleSaveEdit(note.id)}>
+                      儲存
+                    </button>
+                    <button style={styles.cancelButton} onClick={handleCancelEdit}>
+                      取消
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // --- 一般顯示模式 UI ---
+                <>
+                  <p style={styles.noteText}>{note.text}</p>
+                  <div style={styles.noteFooter}>
+                    <span style={styles.noteDate}>{note.date}</span>
+                    <div style={styles.actionButtons}>
+                      <button 
+                        style={styles.editButton} 
+                        onClick={() => handleStartEdit(note)}
+                      >
+                        修改
+                      </button>
+                      <button 
+                        style={styles.deleteButton} 
+                        onClick={() => handleDeleteNote(note.id)}
+                      >
+                        刪除
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           ))
         )}
@@ -72,17 +178,17 @@ const JsNotebook = () => {
   );
 };
 
-// 獨立的行內樣式設計，方便隨插即用
+// 樣式保持不變
 const styles = {
   section: {
     padding: '4rem 2rem',
     backgroundColor: '#fff',
     textAlign: 'center',
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid #eee'
   },
   title: {
     fontSize: '2rem',
-    marginBottom: '0.5rem',
+    marginBottom: '0.5rem'
   },
   subtitle: {
     color: '#666',
@@ -108,7 +214,7 @@ const styles = {
   },
   addButton: {
     padding: '0.8rem',
-    backgroundColor: '#f7df1e', // JS 黃色
+    backgroundColor: '#f7df1e',
     color: '#000',
     border: 'none',
     borderRadius: '8px',
@@ -134,7 +240,7 @@ const styles = {
   },
   noteText: {
     margin: '0 0 1rem 0',
-    whiteSpace: 'pre-wrap', // 讓換行符號能正常顯示
+    whiteSpace: 'pre-wrap',
     lineHeight: '1.6',
     fontSize: '1.05rem'
   },
@@ -149,6 +255,19 @@ const styles = {
     fontSize: '0.85rem',
     color: '#999'
   },
+  actionButtons: {
+    display: 'flex',
+    gap: '0.5rem'
+  },
+  editButton: {
+    padding: '0.4rem 0.8rem',
+    backgroundColor: '#1890ff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '0.9rem'
+  },
   deleteButton: {
     padding: '0.4rem 0.8rem',
     backgroundColor: '#ff4d4f',
@@ -158,10 +277,38 @@ const styles = {
     cursor: 'pointer',
     fontSize: '0.9rem'
   },
+  editContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem'
+  },
+  editActions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '0.5rem'
+  },
+  saveButton: {
+    padding: '0.4rem 1rem',
+    backgroundColor: '#52c41a',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+  },
+  cancelButton: {
+    padding: '0.4rem 1rem',
+    backgroundColor: '#d9d9d9',
+    color: '#333',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  },
   emptyText: {
     color: '#999',
     fontStyle: 'italic',
-    marginTop: '2rem'
+    marginTop: '2rem',
+    textAlign: 'center'
   }
 };
 

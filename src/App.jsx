@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom'; // 引入路由元件
 import './App.css';
 
 // 引入拆分出來的各個元件
@@ -19,18 +20,30 @@ function App() {
   return (
     <div className="app-container">
       <Navbar />
-      <HeroSection />
-      <main>
-        <FeaturesSection />
-        <EvolutionSection />
-        <FrameworksAndArchitecture /> 
-        <TerminalCommands />
-        <AdvancedConcepts />
-        <TeachingSection />
-        <JsxTutorial />
-        <LearningChecklist />
-        <ReferenceLinks />
+      
+      {/* 使用 Routes 定義不同網址要顯示的分頁 */}
+      <main style={{ minHeight: 'calc(100vh - 80px)' }}> 
+        <Routes>
+          <Route path="/" element={<HeroSection />} />
+          <Route path="/features" element={<FeaturesSection />} />
+          <Route path="/evolution" element={<EvolutionSection />} />
+          <Route path="/architecture" element={<FrameworksAndArchitecture />} />
+          <Route path="/terminal" element={<TerminalCommands />} />
+          
+          {/* 將教學與進階概念組合在同一個「學習區」分頁 */}
+          <Route path="/learning" element={
+            <>
+              <AdvancedConcepts />
+              <TeachingSection />
+              <JsxTutorial />
+              <LearningChecklist />
+            </>
+          } />
+          
+          <Route path="/references" element={<ReferenceLinks />} />
+        </Routes>
       </main>
+
       <Footer />
     </div>
   );

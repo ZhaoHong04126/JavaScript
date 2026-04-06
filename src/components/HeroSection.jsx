@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+  // 使用 React Router 的導航 Hook
+  const navigate = useNavigate();
+
   const handleStartLearning = () => {
-    const targetSection = document.getElementById('features');
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    // 點擊後跳轉到 features 分頁
+    navigate('/features');
   };
 
   return (

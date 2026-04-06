@@ -21,7 +21,13 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
         <li><Link to="/architecture" style={{ color: 'inherit', textDecoration: 'none' }}>框架</Link></li>
         <li><Link to="/terminal" style={{ color: 'inherit', textDecoration: 'none' }}>指令</Link></li>
         <li><Link to="/learning" style={{ color: 'inherit', textDecoration: 'none' }}>學習</Link></li>
-        <li><Link to="/notebook" style={{ color: 'inherit', textDecoration: 'none' }}>筆記本</Link></li>
+        {isLoggedIn && (
+          <li>
+            <Link to="/notebook" style={{ color: 'inherit', textDecoration: 'none' }}>
+              筆記本
+            </Link>
+          </li>
+        )}
         <li><Link to="/references" style={{ color: 'inherit', textDecoration: 'none' }}>資源</Link></li>
       </ul>
       

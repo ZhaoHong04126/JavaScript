@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // 👈 增加引入 useState, useEffect
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
 // 引入各個元件
@@ -66,7 +66,11 @@ function App() {
               <LearningChecklist />
             </>
           } />
-          <Route path="/notebook" element={<JsNotebook />} />
+          
+          <Route 
+            path="/notebook" 
+            element={isLoggedIn ? <JsNotebook /> : <Navigate to="/login" />} 
+          />
           
           {/* 🌟 加入登入頁面的路由，並傳入處理登入的函式 */}
           <Route path="/login" element={<Login onLogin={handleLogin} />} />

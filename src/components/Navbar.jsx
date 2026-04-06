@@ -1,54 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-// 接收由 App.jsx 傳遞進來的 props
 const Navbar = ({ isLoggedIn, userName, onLogout }) => {
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogoutClick = () => {
     onLogout();
-    navigate('/'); // 登出後回到首頁
+    navigate('/');
+    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
 
   return (
     <nav className="navbar">
+      {/* 🌟 1. 將漢堡按鈕移到最前面 (這樣它就會在左邊) */}
+      <button className={`hamburger ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
+        <span className="bar"></span>
+        <span className="bar"></span>
+        <span className="bar"></span>
+      </button>
+
+      {/* 🌟 2. 網站 Logo 放在漢堡選單後面 (手機版會被推到畫面右邊) */}
       <div className="navbar-brand">
-        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>JS 探索</Link>
+        <Link to="/" onClick={closeMenu} style={{ color: 'inherit', textDecoration: 'none' }}>JS 探索</Link>
       </div>
-      <ul className="navbar-links">
-        <li><Link to="/features" style={{ color: 'inherit', textDecoration: 'none' }}>特性</Link></li>
-        <li><Link to="/evolution" style={{ color: 'inherit', textDecoration: 'none' }}>演進史</Link></li>
-        <li><Link to="/architecture" style={{ color: 'inherit', textDecoration: 'none' }}>框架</Link></li>
-        <li><Link to="/terminal" style={{ color: 'inherit', textDecoration: 'none' }}>指令</Link></li>
-        <li><Link to="/learning" style={{ color: 'inherit', textDecoration: 'none' }}>學習</Link></li>
-        {isLoggedIn && (
-          <li>
-            <Link to="/notebook" style={{ color: 'inherit', textDecoration: 'none' }}>
-              筆記本
-            </Link>
-          </li>
-        )}
-        <li><Link to="/references" style={{ color: 'inherit', textDecoration: 'none' }}>資源</Link></li>
-      </ul>
-      
-      {/* 🌟 根據是否登入，顯示對應的區塊 */}
-      <div className="auth-section" style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#fff' }}>
-        {isLoggedIn ? (
-          <>
-            <span style={{ fontSize: '0.95rem' }}>哈囉, <span style={{ color: '#f7df1e', fontWeight: 'bold' }}>{userName}</span></span>
-            <button 
-              onClick={handleLogoutClick}
-              style={{ backgroundColor: 'transparent', color: '#fff', border: '1px solid #fff', padding: '0.4rem 0.8rem', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              登出
-            </button>
-          </>
-        ) : (
-          <Link to="/login" style={{ backgroundColor: '#f7df1e', color: '#000', padding: '0.4rem 1rem', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold' }}>
-            登入
-          </Link>
-        )}
+
+      <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+        <ul className="navbar-links">
+          <li><Link to="/features" onClick={closeMenu}>特性</Link></li>
+          <li><Link to="/evolution" onClick={closeMenu}>演進史</Link></li>
+          <li><Link to="/architecture" onClick={closeMenu}>框架</Link></li>
+          <li><Link to="/terminal" onClick={closeMenu}>指令</Link></li>
+          <li><Link to="/learning" onClick={closeMenu}>學習</Link></li>
+          {isLoggedIn && (
+            <li><Link to="/notebook" onClick={closeMenu}>筆記本</Link></li>
+          )}
+          <li><Link to="/references" onClick={closeMenu}>資源</Link></li>
+        </ul>
+        
+        <div className="auth-section">
+          {isLoggedIn ? (
+            <>
+              <span className="user-greeting">哈囉, <span>{userName}</span></span>
+              <button className="logout-btn" onClick={handleLogoutClick}>登出</button>
+            </>
+          ) : (
+            <Link to="/login" className="login-btn" onClick={closeMenu}>登入</Link>
+          )}
+        </div>
       </div>
+
+      {isMenuOpen && <div className="overlay" onClick={closeMenu}></div>}
     </nav>
   );
 };

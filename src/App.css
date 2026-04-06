@@ -396,7 +396,77 @@ body {
 }
 
 /* =========================================
-   9. 響應式設計 (RWD) - 平板與手機版適配
+   9. 導覽列與側邊欄進階設計 (Navbar & Sidebar)
+========================================= */
+
+/* 隱藏漢堡按鈕 (預設桌面版不顯示) */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  z-index: 1002; /* 確保按鈕在側邊欄上方 */
+}
+
+/* 用 CSS 畫出漢堡選單的三條線 */
+.hamburger .bar {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px auto;
+  background-color: white;
+  transition: all 0.3s ease-in-out;
+  border-radius: 2px;
+}
+
+/* 桌面版：將連結和登入區塊橫向排列 */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* 修改連結不要帶有底線 */
+.navbar-links a {
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.2s;
+}
+.navbar-links a:hover {
+  color: var(--primary-color);
+}
+
+/* 登入相關按鈕樣式 */
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #fff;
+}
+.user-greeting span {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+.logout-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.login-btn {
+  background-color: var(--primary-color);
+  color: #000;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* =========================================
+   10. 響應式設計 (RWD) - 平板與手機版適配
 ========================================= */
 @media (max-width: 900px) {
   .framework-grid, .framework-structure-grid { grid-template-columns: 1fr; }
@@ -410,9 +480,79 @@ body {
   .hero h1 { font-size: 2.2rem; }
   .timeline { padding-left: 1.2rem; }
   .timeline-item::before { left: -1.9rem; }
-  
-  /* 手機版導覽列變成上下兩排 */
-  .navbar { flex-direction: column; padding: 0.8rem; gap: 0.8rem; }
-  .navbar-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
-  .navbar-links li { font-size: 0.95rem; }
 }
+
+/* 小於 768px 時啟用側邊欄 */
+@media (max-width: 768px) {
+  /* 強制導覽列橫向排列、靠左對齊 */
+  .navbar {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  /* 顯示漢堡按鈕 */
+  .hamburger {
+    display: block;
+  }
+
+  /* 側邊欄主體設計 */
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100px;
+    height: 100vh;
+    background-color: #222;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5rem 2rem 2rem 2rem;
+    transition: left 0.3s ease-in-out;
+    z-index: 1001;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  }
+
+  /* 當 isMenuOpen 為 true 時，加上 active class 讓側邊欄滑進來 */
+  .nav-menu.active {
+    left: 0;
+  }
+
+  /* 側邊欄內的連結直向排列 */
+  .navbar-links {
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  /* 側邊欄內的認證區塊直向排列 */
+  .auth-section {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  /* 點擊外的黑色半透明遮罩 */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  /* 漢堡按鈕變成 [X] 的動畫 */
+  .hamburger.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .hamburger.active .bar:nth-child(2) {
+    opacity: 0; /* 中間那條線消失 */
+  }
+  .hamburger.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+}
+
